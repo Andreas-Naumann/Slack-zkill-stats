@@ -67,11 +67,11 @@ def run_killboard(config_type, config_id):
                 victimName = victim['characterName']
             
             if victim[config_type] == config_id:
-                kill['fallback'] = '{0} got killed by {1} >>{2}<< || {3}'.format(victimName, killerName, killer['corporationName'], killer['allianceName'])
+                kill['fallback'] = '{0} [{1}] >> [{2}] got killed by {3} [{4}] >> [{5}]'.format(victimName, victim['corporationName'], victim['allianceName'], killerName, killer['corporationName'], killer['allianceName'])
                 kill['color'] = 'danger'
                 damageTaken['title'] = "Damage taken"
             else:
-                kill['fallback'] = '{0} killed {1} >>{2}<< || {3}'.format(killerName, victimName, victim['corporationName'], victim['allianceName'])
+                kill['fallback'] = '{0} [{1}] >> [{2}] killed {3} [{4}] >> [{5}]'.format(killerName, killer['corporationName'], killer['allianceName'], victimName, victim['corporationName'], victim['allianceName'])
                 kill['color'] = 'good'
                 damageTaken['title'] = "Damage dealt"
 
@@ -91,8 +91,8 @@ def run_killboard(config_type, config_id):
             mostDmg = {}
             if highestDealer and highestDealer['characterID'] != 0:
                 mostDmg['title'] = 'Most Damage'
-                mostDmg['value'] = '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(highestDealer['characterID'], highestDealer['characterName'], locale.format('%d', highestDmg, grouping=True))
-                mostDmg['short'] = "true"
+                mostDmg['value'] = '<https://zkillboard.com/character/{0}|{1}> {2} dmg ({3:.2f}%)'.format(highestDealer['characterID'], highestDealer['characterName'], locale.format('%d', highestDmg, grouping=True), float((1.0*highestDmg/victim['damageTaken'])*100))
+                mostDmg['short'] = "false"
             
             solarSystemName,regionID,regionName,constellationName,security = systems.get_system_by_id(record['solarSystemID'])
             system = {'title': 'System', 'value': '<https://zkillboard.com/system/{systemID}|{systemName}> ({security:.1g}) / <https://zkillboard.com/region/{regionID}|{regionName}> / {constellationName}'.format(
