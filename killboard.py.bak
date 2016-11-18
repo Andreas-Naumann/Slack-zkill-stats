@@ -55,7 +55,6 @@ def run_killboard(config_type, config_id):
             attachment = {}
             damageTaken = {}
             kill = {}
-            killTime = {}
             
             if killer['characterID'] == 0:
                 killerName = killer['shipTypeID']
@@ -67,20 +66,17 @@ def run_killboard(config_type, config_id):
                 victimName = victim['characterName']
             
             if victim[config_type] == config_id:
-                kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, killer['corporationName'], killer['allianceName'])
+                kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, killer['corporationName'])
                 kill['color'] = 'danger'
                 damageTaken['title'] = "Damage taken"
             else:
-                kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, victim['corporationName'], victim['allianceName'])
+                kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, victim['corporationName'])
                 kill['color'] = 'good'
                 damageTaken['title'] = "Damage dealt"
 
             kill['title'] = kill['fallback']
             kill['title_link'] = 'https://zkillboard.com/kill/{0}/'.format(kill_id)
             kill['thumb_url'] = 'https://imageserver.eveonline.com/Render/{0}_64.png'.format(victim['shipTypeID'])
-            
-            killTime['title'] = 'Kill Time' 
-            killTime['value'] = record['killTime']
             
             damageTaken['value'] = locale.format('%d', victim['damageTaken'], grouping=True)
             damageTaken['short'] = "true"
@@ -105,7 +101,7 @@ def run_killboard(config_type, config_id):
             ), 'short': False}
             ship = {'title': 'Ship', 'value': '{0}'.format(ships.get_ship_by_id(victim['shipTypeID'])), 'short': 'true'}
             
-            kill['fields'] = [killTime, damageTaken, totalAttackers, mostDmg, ship, value, system]
+            kill['fields'] = [damageTaken, totalAttackers, mostDmg, ship, value, system]
             
             attachment['attachments'] = [kill]
             
