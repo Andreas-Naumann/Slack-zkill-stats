@@ -14,7 +14,7 @@ import os
 import signal
 
 def run_killboard(config_type, config_id):
-    kills = 'https://zkillboard.com/api/{0}/{1}/pastSeconds/{2}/'.format(config_type, config_id, config.config_check)
+    kills = 'https://zkillboard.com/api/{0}/{1}/orderDirection/asc/pastSeconds/{2}/'.format(config_type, config_id, config.config_check)
 
     locale.setlocale(locale.LC_ALL, config.config_locale)
 
