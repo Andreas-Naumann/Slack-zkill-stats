@@ -1,4 +1,4 @@
-# Slack-Eve-Killmail
+# Slack-zkill-stats
 
 ## Requirements
 * Slack
@@ -22,18 +22,18 @@
 ## Configurable fields
 * config\_header = 'Slack-Eve-Killboard/1.0a https://github.com/dimurgos/Slack-Eve-Killmail' # header
 * config\_owner = [{'': 0}] # Format of: 'corporationID': <id> or 'allianceID': <id> (can be multiple)
-* config\_check = '86400' # Check for the last day (maximal retrieval amount)
-* config\_sleep\_time = 1200 # Delay between checks (20 minutes default)
+* config\_check = '' # likely to be deleted because it is not needed for stats API 
+* config\_sleep\_time = 84600 # Delay between checks (24 hours default)
 * config\_slack\_url = 'https://hooks.slack.com/services/' # Slack integration code
 * config\_locale = 'en_US' # The locale to post ISK values in
 
 ## Result
-* Every 20 minutes the list of kills over the last day will be posted in the configured Slack channel
-* Posts if it is a loss or a kill (green for kill, red for loss)
-* Includes damage dealt, pilots involved, ship, value, system and most damage done
+* Every 24 hours the script will check if it is the first of the month, if it is, last months stats will be send to the slackbot 
+* Posts will in clude updated all time stats as well as last months stats sums
+
 
 ## Example
-![example](docs/killmails.png?raw=true)
+![example](docs/statspost.png?raw=true)
 
 ## Solutions for possible issues
 * 'locale.Error'

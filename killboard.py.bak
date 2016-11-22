@@ -14,7 +14,7 @@ import os
 import signal
 
 def run_killboard(config_type, config_id):
-    kills = 'https://zkillboard.com/api/{0}/{1}/pastSeconds/{2}/'.format(config_type, config_id, config.config_check)
+    kills = 'https://zkillboard.com/api/{0}/{1}/orderDirection/asc/pastSeconds/{2}/'.format(config_type, config_id, config.config_check)
 
     locale.setlocale(locale.LC_ALL, config.config_locale)
 
@@ -55,6 +55,7 @@ def run_killboard(config_type, config_id):
             attachment = {}
             damageTaken = {}
             kill = {}
+            killTime = {}
             
             if killer['characterID'] == 0:
                 killerName = killer['shipTypeID']
@@ -66,17 +67,20 @@ def run_killboard(config_type, config_id):
                 victimName = victim['characterName']
             
             if victim[config_type] == config_id:
-                kill['fallback'] = '{0} got killed by {1} ({2})'.format(victimName, killerName, killer['corporationName'])
+                kill['fallback'] = '{0} [{1}] >> [{2}] got killed by {3} [{4}] >> [{5}]'.format(victimName, victim['corporationName'], victim['allianceName'], killerName, killer['corporationName'], killer['allianceName'])
                 kill['color'] = 'danger'
                 damageTaken['title'] = "Damage taken"
             else:
-                kill['fallback'] = '{0} killed {1} ({2})'.format(killerName, victimName, victim['corporationName'])
+                kill['fallback'] = '{0} [{1}] >> [{2}] killed {3} [{4}] >> [{5}]'.format(killerName, killer['corporationName'], killer['allianceName'], victimName, victim['corporationName'], victim['allianceName'])
                 kill['color'] = 'good'
                 damageTaken['title'] = "Damage dealt"
 
             kill['title'] = kill['fallback']
             kill['title_link'] = 'https://zkillboard.com/kill/{0}/'.format(kill_id)
             kill['thumb_url'] = 'https://imageserver.eveonline.com/Render/{0}_64.png'.format(victim['shipTypeID'])
+            
+            killTime['title'] = 'Kill Time' 
+            killTime['value'] = record['killTime']
             
             damageTaken['value'] = locale.format('%d', victim['damageTaken'], grouping=True)
             damageTaken['short'] = "true"
@@ -87,8 +91,8 @@ def run_killboard(config_type, config_id):
             mostDmg = {}
             if highestDealer and highestDealer['characterID'] != 0:
                 mostDmg['title'] = 'Most Damage'
-                mostDmg['value'] = '<https://zkillboard.com/character/{0}|{1}> ({2})'.format(highestDealer['characterID'], highestDealer['characterName'], locale.format('%d', highestDmg, grouping=True))
-                mostDmg['short'] = "true"
+                mostDmg['value'] = '<https://zkillboard.com/character/{0}|{1}> {2} dmg ({3:.2f}%)'.format(highestDealer['characterID'], highestDealer['characterName'], locale.format('%d', highestDmg, grouping=True), float((1.0*highestDmg/victim['damageTaken'])*100))
+                mostDmg['short'] = "false"
             
             solarSystemName,regionID,regionName,constellationName,security = systems.get_system_by_id(record['solarSystemID'])
             system = {'title': 'System', 'value': '<https://zkillboard.com/system/{systemID}|{systemName}> ({security:.1g}) / <https://zkillboard.com/region/{regionID}|{regionName}> / {constellationName}'.format(
@@ -101,7 +105,7 @@ def run_killboard(config_type, config_id):
             ), 'short': False}
             ship = {'title': 'Ship', 'value': '{0}'.format(ships.get_ship_by_id(victim['shipTypeID'])), 'short': 'true'}
             
-            kill['fields'] = [damageTaken, totalAttackers, mostDmg, ship, value, system]
+            kill['fields'] = [killTime, damageTaken, totalAttackers, mostDmg, ship, value, system]
             
             attachment['attachments'] = [kill]
             
